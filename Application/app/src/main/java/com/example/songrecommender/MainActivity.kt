@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
+import android.content.Intent
+import android.net.Uri
 
 class MainActivity : AppCompatActivity() {
     private lateinit var songAdapter: SongAdapter
@@ -25,11 +27,27 @@ class MainActivity : AppCompatActivity() {
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
         val rvRecommendations = findViewById<RecyclerView>(R.id.rvRecommendations)
 
-        // Setup RecyclerView
-        songAdapter = SongAdapter(emptyList())
+        // Setup RecyclerView and pass the click handling logic
+        songAdapter = SongAdapter(emptyList()) { song ->
+            // This is what happens when a song is clicked
+            val spotifyUri = "spotify:track:${song.track_id}"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(spotifyUri))
+
+            // Add a flag to launch Spotify in a new task
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            // We use a try-catch block in case the user doesn't have Spotify installed
+            try {
+                startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Spotify app not found. Please install it.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         rvRecommendations.adapter = songAdapter
         rvRecommendations.layoutManager = LinearLayoutManager(this)
 
+        // The button's OnClickListener remains the same
         btnGetRecommendations.setOnClickListener {
             val song = etSongName.text.toString().trim()
             val artist = etArtistName.text.toString().trim()

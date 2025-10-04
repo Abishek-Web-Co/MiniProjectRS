@@ -102,7 +102,7 @@ def find_recommendations(song_name, artist_name, num_recommendations=10):
         top_indices = [i[0] for i in sim_scores[1:num_recommendations + 1]]
 
         # Step 5: Return recommendations
-        return df.iloc[top_indices][['track_name', 'artist_name']]
+        return df.iloc[top_indices][['track_name', 'artist_name', 'track_id']]
 
     except Exception as e:
         print(f"An error occurred during recommendation: {e}")

@@ -4,7 +4,8 @@ package com.example.songrecommender
 // The JSON from your latest backend has "track_name" and "artist_name".
 data class Song(
     val track_name: String,
-    val artist_name: String
+    val artist_name: String,
+    val track_id: String
 )
 
 data class RecommendationResponse(
