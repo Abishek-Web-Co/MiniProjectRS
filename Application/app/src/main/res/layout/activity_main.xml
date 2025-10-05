@@ -4,99 +4,62 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#121212"
     tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_toolbar_background"
-        app:elevation="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
-
-
-    <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="Xe54z"
-            app:titleCentered="true"
-            app:titleTextColor="?attr/colorOnPrimary"
-            app:titleTextAppearance="@style/MyToolbarTitleStyle"/>
-
-    </com.google.android.material.appbar.AppBarLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilSongName"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:hint="Song Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
-        app:startIconDrawable="@drawable/ic_music_note">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etSongName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textCapWords"
-            android:text="Shape Of You" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilArtistName"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:hint="Artist Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tilSongName"
-        app:startIconDrawable="@drawable/ic_artist">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etArtistName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textCapWords"
-            android:text="Ed Sheeran" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnGetRecommendations"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:text="Get Recommendations"
-        app:icon="@android:drawable/ic_menu_search"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tilArtistName" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
+    <TextView
+        android:id="@+id/tvGreeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Good evening"
+        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_settings"
+        app:layout_constraintBottom_toBottomOf="@id/tvGreeting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvGreeting"
+        app:tint="@android:color/white" />
+
+    <TextView
+        android:id="@+id/tvSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/search_bar_background"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="12dp"
+        android:gravity="center_vertical"
+        android:hint="What do you want to listen to?"
+        android:padding="12dp"
+        android:textColorHint="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnGetRecommendations"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toBottomOf="@id/tvGreeting" />
+
+
+    <TextView
+        android:id="@+id/tvRecommendationsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Recommendations for You"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSearch" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecommendations"
@@ -106,7 +69,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnGetRecommendations"
+        app:layout_constraintTop_toBottomOf="@id/tvRecommendationsTitle"
         tools:listitem="@layout/item_song" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

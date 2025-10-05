@@ -1,79 +1,96 @@
 package com.example.songrecommender
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
-import android.content.Intent
-import android.net.Uri
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var songAdapter: SongAdapter
+
+    // This is the new way to handle getting a result from another activity
+    private val searchActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            val songName = data?.getStringExtra("SONG_NAME")
+            val artistName = data?.getStringExtra("ARTIST_NAME")
+
+            if (!songName.isNullOrEmpty() && !artistName.isNullOrEmpty()) {
+                // When we get a result, fetch recommendations for the new song
+                val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+                val rvRecommendations = findViewById<RecyclerView>(R.id.rvRecommendations)
+                fetchRecommendations(songName, artistName, progressBar, rvRecommendations)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val etSongName = findViewById<TextInputEditText>(R.id.etSongName)
-        val etArtistName = findViewById<TextInputEditText>(R.id.etArtistName)
-        val btnGetRecommendations = findViewById<Button>(R.id.btnGetRecommendations)
+        val tvSearch = findViewById<TextView>(R.id.tvSearch)
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
         val rvRecommendations = findViewById<RecyclerView>(R.id.rvRecommendations)
 
-        // Setup RecyclerView and pass the click handling logic
+        setupRecyclerView(rvRecommendations)
+
+        // Load default recommendations on startup
+        fetchRecommendations("Blinding Lights", "The Weeknd", progressBar, rvRecommendations)
+
+        // Make the search bar clickable
+        tvSearch.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            searchActivityResultLauncher.launch(intent)
+        }
+    }
+
+    // The rest of the functions are the same as before
+    private fun setupRecyclerView(rvRecommendations: RecyclerView) {
         songAdapter = SongAdapter(emptyList()) { song ->
-            // This is what happens when a song is clicked
             val spotifyUri = "spotify:track:${song.track_id}"
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(spotifyUri))
-
-            // Add a flag to launch Spotify in a new task
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-            // We use a try-catch block in case the user doesn't have Spotify installed
             try {
                 startActivity(intent)
             } catch (e: Exception) {
-                Toast.makeText(this, "Spotify app not found. Please install it.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Spotify app not found.", Toast.LENGTH_SHORT).show()
             }
         }
-
         rvRecommendations.adapter = songAdapter
         rvRecommendations.layoutManager = LinearLayoutManager(this)
+    }
 
-        // The button's OnClickListener remains the same
-        btnGetRecommendations.setOnClickListener {
-            val song = etSongName.text.toString().trim()
-            val artist = etArtistName.text.toString().trim()
+    private fun fetchRecommendations(song: String, artist: String, progressBar: ProgressBar, rvRecommendations: RecyclerView) {
+        progressBar.visibility = View.VISIBLE
+        rvRecommendations.visibility = View.GONE
 
-            if (song.isNotEmpty() && artist.isNotEmpty()) {
-                progressBar.visibility = View.VISIBLE
-                rvRecommendations.visibility = View.GONE
+        lifecycleScope.launch {
+            try {
+                val response = RetrofitInstance.api.getRecommendations(song, artist)
+                progressBar.visibility = View.GONE
+                rvRecommendations.visibility = View.VISIBLE
 
-                lifecycleScope.launch {
-                    try {
-                        val response = RetrofitInstance.api.getRecommendations(song, artist)
-                        progressBar.visibility = View.GONE
-                        rvRecommendations.visibility = View.VISIBLE
-
-                        if (response.isSuccessful && response.body() != null) {
-                            songAdapter.updateSongs(response.body()!!.recommendations)
-                        } else {
-                            Toast.makeText(applicationContext, "Error: ${response.message()}", Toast.LENGTH_SHORT).show()
-                        }
-                    } catch (e: Exception) {
-                        progressBar.visibility = View.GONE
-                        Toast.makeText(applicationContext, "Network Error: ${e.message}", Toast.LENGTH_LONG).show()
-                    }
+                if (response.isSuccessful && response.body() != null) {
+                    songAdapter.updateSongs(response.body()!!.recommendations)
+                } else {
+                    Toast.makeText(applicationContext, "Error: ${response.message()}", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(applicationContext, "Please enter both song and artist", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                progressBar.visibility = View.GONE
+                Toast.makeText(applicationContext, "Network Error: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
