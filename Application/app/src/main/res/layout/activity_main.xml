@@ -6,6 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_toolbar_background"
+        app:elevation="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
+
+
+    <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Xe54z"
+            app:titleCentered="true"
+            app:titleTextColor="?attr/colorOnPrimary"
+            app:titleTextAppearance="@style/MyToolbarTitleStyle"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilSongName"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -15,14 +39,15 @@
         android:hint="Song Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
         app:startIconDrawable="@drawable/ic_music_note">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etSongName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapWords"/>
+            android:inputType="textCapWords"
+            android:text="Shape Of You" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -44,7 +69,8 @@
             android:id="@+id/etArtistName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapWords"/>
+            android:inputType="textCapWords"
+            android:text="Ed Sheeran" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
